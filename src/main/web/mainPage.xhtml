@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:body>
+        <ui:composition template="mainPageFacelets/mainPage.xhtml">
+
+            <ui:define name="chart">
+                <h:outputScript library="js" name="chart.js"/>
+                <h:outputScript library="js" name="generalChartFunctions.js"/>
+                <canvas id="canv" width="300" height="300">Ooops something is going wrong :(</canvas>
+            </ui:define>
+
+            <ui:define name="form">
+                <h:form id="jsfForm">
+
+                    <h3>Select X:</h3>
+                    <h:selectOneRadio value="#{hitsHandler.currentX}" style="margin: 0px auto;" required="true" label="x_value" id="x_value">
+                        <f:selectItem itemValue="-2" itemLabel="-2"/>
+                        <f:selectItem itemValue="-1.5" itemLabel="-1.5"/>
+                        <f:selectItem itemValue="-1" itemLabel="-1"/>
+                        <f:selectItem itemValue="-0.5" itemLabel="-0.5"/>
+                        <f:selectItem itemValue="0" itemLabel="0"/>
+                        <f:selectItem itemValue="0.5" itemLabel="0.5"/>
+                        <f:selectItem itemValue="1" itemLabel="1"/>
+                        <f:selectItem itemValue="1.5" itemLabel="1.5"/>
+                    </h:selectOneRadio>
+
+                    <h:inputHidden value="#{hitsHandler.hiddenX}" id="hidden_x"/>
+
+                    <h3>Input Y{-3...5}:</h3>
+                    <h:inputText id="y_value" value="#{hitsHandler.currentY}" required="true" label="Y value">
+                        <f:converter converterId="DoubleConverter"/>
+                        <f:validateDoubleRange minimum="-3" maximum="5"/>
+                    </h:inputText>
+                    <br/>
+                    <h:message for="y_value" style="color: red"/>
+
+                    <h3>Select R:</h3>
+                    <p:spinner id="r_value" value="#{hitsHandler.currentR}" stepFactor="0.1" min="0.1" max="3.0" required="true" widgetVar="spin" label="R value" onchange="updateChart()">
+                        <f:validateLength maximum="3"/>
+                    </p:spinner>
+                    <h3>
+                        <h:message for="r_value" style="color: red"/>
+                    </h3>
+                    <br/>
+
+                    <h:commandButton value="Check" action="#{hitsHandler.updateMainPage}" style="margin-top: 20px"/>
+                </h:form>
+            </ui:define>
+
+            <ui:define name="history">
+                <h:outputStylesheet library="css" name="table.css"/>
+
+                <h2>Previous hits:</h2>
+                <h:form>
+                    <h:dataTable value="#{hitsHandler.history}" var="hit" styleClass="hitsTable"
+                                 headerClass="hitsTableHeader" rowClasses="hitsTableOddRow, hitsTableEvenRow" style="margin: auto"
+                                 columnClasses="hitsTableXColumn, hitsTableYColumn, hitsTableRColumn, hitsTableCheckColumn, hitsTableTimeColumn">
+
+                        <h:column>
+                            <f:facet name="header">  X  </f:facet>
+                            #{hit.x}
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">  Y  </f:facet>
+                            #{hit.y}
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">  R  </f:facet>
+                            #{hit.r}
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">is in Area</f:facet>
+                            #{hit.inArea}
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">Hit time</f:facet>
+                            #{hit.hitTime}
+                        </h:column>
+
+                    </h:dataTable>
+                </h:form>
+            </ui:define>
+
+            <ui:define name="footer">
+                <p>
+                    <h:form>
+                        <h:commandLink value="Go back to start page!" action="#{navigationController.moveToStartPage}"/>
+                    </h:form>
+                </p>
+            </ui:define>
+
+        </ui:composition>
+    </h:body>
+</html>

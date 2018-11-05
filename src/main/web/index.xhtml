@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://xmlns.jcp.org/jsf/html ">
+
+    <h:body>
+        <ui:composition template="startPageFacelets/startPage.xhtml">
+
+            <ui:define name="header">
+                <p>Масалкин Савелий Евгеньевич</p>
+                <p>Луговских Савелий Михайлович</p>
+                <div>Group: P3218</div>
+                <div>Variant: 18003</div>
+            </ui:define>
+
+            <ui:define name="content">
+                <h:outputStylesheet library="css" name="startPageContent.css"/>
+                <h:outputScript library="js" name="clock.js"/>
+                <canvas id="canv" width="400" height="400">Ooops something is going wrong :(</canvas>
+            </ui:define>
+
+            <ui:define name="footer">
+                <p>
+                    <h:form>
+                        <h:commandLink value="Go to main page!" action="#{navigationController.moveToMainPage}"/>
+                    </h:form>
+                </p>
+            </ui:define>
+
+        </ui:composition>
+    </h:body>
+</html>

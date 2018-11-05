@@ -1,0 +1,14 @@
+body {
+    font-family: serif;
+    text-align: center;
+}
+
+p {
+    font-weight: 600;
+    font-style: italic;
+    font-size: 20px;
+}
+
+canvas {
+    margin-bottom: 20px;
+}
