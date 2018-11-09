@@ -1,3 +1,8 @@
+import javax.faces.context.FacesContext;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
+import javax.persistence.Persistence;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -10,10 +15,16 @@ public class HitsHandler implements Serializable {
     private ArrayList<Hit> history;
     private double hiddenX = -10;
     private double tempHiddenX = 0;
+    private EntityManagerFactory hitUnit;
+    private EntityManager entityManager;
+    EntityTransaction transaction;
 
     public HitsHandler() {
         areaChecker = new Variant18003AreaChecker();
         history = new ArrayList<Hit>();
+        hitUnit = Persistence.createEntityManagerFactory("hitUnit");
+        entityManager = hitUnit.createEntityManager();
+        transaction = entityManager.getTransaction();
     }
 
     public double getCurrentX() {
@@ -38,6 +49,16 @@ public class HitsHandler implements Serializable {
 
     public void setCurrentR(double currentR) {
         if (tempHiddenX != -10) {
+
+            if (!transaction.isActive()) {
+                transaction.begin();
+            }
+            entityManager.persist(new Hit(tempHiddenX,
+                    currentY,
+                    currentR,
+                    areaChecker.Check(tempHiddenX, currentY, currentR),
+                    new SimpleDateFormat("yyyy.MM.dd_HH.mm.ss").format(Calendar.getInstance().getTime())));
+            transaction.commit();
             history.add(new Hit(tempHiddenX,
                     currentY,
                     currentR,
@@ -61,6 +82,15 @@ public class HitsHandler implements Serializable {
     }
 
     public String updateMainPage(){
+        if (!transaction.isActive()) {
+            transaction.begin();
+        }
+        entityManager.persist(new Hit(currentX,
+                currentY,
+                currentR,
+                areaChecker.Check(currentX, currentY, currentR),
+                new SimpleDateFormat("yyyy.MM.dd_HH.mm.ss").format(Calendar.getInstance().getTime())));
+        transaction.commit();
         history.add(new Hit(currentX,
                             currentY,
                             currentR,
