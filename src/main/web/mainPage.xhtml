@@ -18,7 +18,7 @@
                 <h:form id="jsfForm">
 
                     <h3>Select X:</h3>
-                    <h:selectOneRadio value="#{hitsHandler.currentX}" style="margin: 0px auto;" required="true" label="x_value" id="x_value">
+                    <h:selectOneRadio id="x_value" value="#{hitsHandler.currentX}" style="margin: 0px auto;" required="true" label="X value">
                         <f:selectItem itemValue="-2" itemLabel="-2"/>
                         <f:selectItem itemValue="-1.5" itemLabel="-1.5"/>
                         <f:selectItem itemValue="-1" itemLabel="-1"/>
@@ -29,7 +29,7 @@
                         <f:selectItem itemValue="1.5" itemLabel="1.5"/>
                     </h:selectOneRadio>
 
-                    <h:inputHidden value="#{hitsHandler.hiddenX}" id="hidden_x"/>
+                    <h:inputHidden id="hidden_x" value="#{hitsHandler.hiddenX}"/>
 
                     <h3>Input Y{-3...5}:</h3>
                     <h:inputText id="y_value" value="#{hitsHandler.currentY}" required="true" label="Y value">
@@ -49,6 +49,7 @@
                     <br/>
 
                     <h:commandButton value="Check" action="#{hitsHandler.updateMainPage}" style="margin-top: 20px"/>
+
                 </h:form>
             </ui:define>
 
@@ -57,7 +58,7 @@
 
                 <h2>Previous hits:</h2>
                 <h:form>
-                    <h:dataTable value="#{hitsHandler.history}" var="hit" styleClass="hitsTable"
+                    <h:dataTable id="historyTable" value="#{hitsHandler.history}" var="hit" styleClass="hitsTable"
                                  headerClass="hitsTableHeader" rowClasses="hitsTableOddRow, hitsTableEvenRow" style="margin: auto"
                                  columnClasses="hitsTableXColumn, hitsTableYColumn, hitsTableRColumn, hitsTableCheckColumn, hitsTableTimeColumn">
 

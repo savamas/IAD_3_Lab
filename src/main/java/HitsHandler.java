@@ -1,8 +1,3 @@
-import javax.faces.context.FacesContext;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.Persistence;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -10,21 +5,13 @@ import java.util.Calendar;
 
 public class HitsHandler implements Serializable {
 
-    private double currentX = 0, currentY = 0, currentR = 1;
-    private  Checkable areaChecker;
+    private double currentX = 0, currentY = 0, currentR = 1, hiddenX = 0;
+    private EntityManagerHandler entityManagerHandler;
+    private AreaCheckerHandler areaCheckerHandler;
     private ArrayList<Hit> history;
-    private double hiddenX = -10;
-    private double tempHiddenX = 0;
-    private EntityManagerFactory hitUnit;
-    private EntityManager entityManager;
-    EntityTransaction transaction;
 
     public HitsHandler() {
-        areaChecker = new Variant18003AreaChecker();
         history = new ArrayList<Hit>();
-        hitUnit = Persistence.createEntityManagerFactory("hitUnit");
-        entityManager = hitUnit.createEntityManager();
-        transaction = entityManager.getTransaction();
     }
 
     public double getCurrentX() {
@@ -48,23 +35,15 @@ public class HitsHandler implements Serializable {
     }
 
     public void setCurrentR(double currentR) {
-        if (tempHiddenX != -10) {
-
-            if (!transaction.isActive()) {
-                transaction.begin();
-            }
-            entityManager.persist(new Hit(tempHiddenX,
-                    currentY,
-                    currentR,
-                    areaChecker.Check(tempHiddenX, currentY, currentR),
-                    new SimpleDateFormat("yyyy.MM.dd_HH.mm.ss").format(Calendar.getInstance().getTime())));
-            transaction.commit();
-            history.add(new Hit(tempHiddenX,
-                    currentY,
-                    currentR,
-                    areaChecker.Check(tempHiddenX, currentY, currentR),
-                    new SimpleDateFormat("yyyy.MM.dd_HH.mm.ss").format(Calendar.getInstance().getTime())));
-        }
+        Hit currentHit = new Hit(hiddenX,
+                                 currentY,
+                                 currentR,
+                                 areaCheckerHandler.getAreaChecker().Check(hiddenX, currentY, currentR),
+                                 new SimpleDateFormat("yyyy.MM.dd_HH.mm.ss").format(Calendar.getInstance().getTime()));
+        entityManagerHandler.getEntityManager().getTransaction().begin();
+        entityManagerHandler.getEntityManager().persist(currentHit);
+        entityManagerHandler.getEntityManager().getTransaction().commit();
+        history.add(currentHit);
         this.currentR = currentR;
     }
 
@@ -73,8 +52,15 @@ public class HitsHandler implements Serializable {
     }
 
     public void setHiddenX(double hiddenX) {
-        tempHiddenX = hiddenX;
-        this.hiddenX = -10;
+        this.hiddenX = hiddenX;
+    }
+
+    public void setEntityManagerHandler(EntityManagerHandler entityManagerHandler) {
+        this.entityManagerHandler = entityManagerHandler;
+    }
+
+    public void setAreaCheckerHandler(AreaCheckerHandler areaCheckerHandler) {
+        this.areaCheckerHandler = areaCheckerHandler;
     }
 
     public ArrayList<Hit> getHistory() {
@@ -82,20 +68,6 @@ public class HitsHandler implements Serializable {
     }
 
     public String updateMainPage(){
-        if (!transaction.isActive()) {
-            transaction.begin();
-        }
-        entityManager.persist(new Hit(currentX,
-                currentY,
-                currentR,
-                areaChecker.Check(currentX, currentY, currentR),
-                new SimpleDateFormat("yyyy.MM.dd_HH.mm.ss").format(Calendar.getInstance().getTime())));
-        transaction.commit();
-        history.add(new Hit(currentX,
-                            currentY,
-                            currentR,
-                            areaChecker.Check(currentX, currentY, currentR),
-                            new SimpleDateFormat("yyyy.MM.dd_HH.mm.ss").format(Calendar.getInstance().getTime())));
         return "mainPage";
     }
 }

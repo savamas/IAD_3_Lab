@@ -23,6 +23,7 @@ $('document').ready(function () {
     $('input:radio').click(function () {
         document.getElementById('jsfForm:hidden_x').value = this.value;
     })
+
 });
 
 function getMousePos(canv, e) {
