@@ -44,6 +44,7 @@ public class HitsHandler implements Serializable {
         entityManagerHandler.getEntityManager().persist(currentHit);
         entityManagerHandler.getEntityManager().getTransaction().commit();
         history.add(currentHit);
+        hiddenX = currentX;
         this.currentR = currentR;
     }
 
